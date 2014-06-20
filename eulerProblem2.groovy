@@ -1,15 +1,13 @@
-List<Integer> sumOfEvenFibsLessThanMaximum (Integer firstTerm, Integer secondTerm, Integer maximum) {
-    def fibs = [firstTerm, secondTerm]
-    def nextTerm = firstTerm + secondTerm
-    while (nextTerm <maximum) 
-     {
-     fibs << nextTerm
-     nextTerm = fibs[-1] + fibs[-2]
-     }
-     return fibs.findAll(it % 2 == 0).sum()
-}    
+def fib(previousTerm, currentTerm, total, max) {
+    def nextTerm = currentTerm + previousTerm
+    if (nextTerm >= max) {
+        return total
+    } else {
+        return fib(currentTerm, nextTerm,
+                nextTerm % 2 == 0 ? total + nextTerm : total, max)
+    }
 
-assert 4613732 == sumOfEvenFibsLessThanMaximum(0,1, 4000000)
-
-
-     
+}
+def answer= fib (0,1,0, 4000000)
+println answer
+assert answer==4613732

@@ -1,13 +1,15 @@
 #lang planet neil/sicp
 
 
-(define (fib lastTwo  lastOne  total max)
-      (if (or (> (+ lastOne lastTwo) max) (= (+ lastOne lastTwo) max))
+(define (fib previousTerm  currentTerm  total max)   
+      (define nextTerm (+ currentTerm previousTerm))
+
+      (if (or (> nextTerm max) (= nextTerm max))
       total
-      (fib lastOne
-       (+ lastOne lastTwo)         
-            (if (= (modulo (+ lastOne lastTwo) 2) 0)
-            (+ total lastOne lastTwo)
+      (fib currentTerm
+       nextTerm         
+            (if (= (modulo nextTerm 2) 0)
+            (+ total nextTerm)
             total)
             max)))
 

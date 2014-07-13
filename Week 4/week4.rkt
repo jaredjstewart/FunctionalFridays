@@ -1,45 +1,42 @@
 #lang planet neil/sicp
 ;Helper methods
-(define (emptyOrNull str) 
-  (or (null? str)
-      ( = (string-length str) 0)))
-
 (define (sum xs)
   (apply + xs))
 
-(define filterb
-    (lambda (pred lst)
-      (cond ((null? lst) '())
-            ((pred (car lst)) (cons (car lst) (filterb pred (cdr lst))))
-            (else (filterb pred (cdr lst))))))
-
-(define get-val car)
-(define get-symbol cdr)
-
-;Conversion
+;First, we must define our symbols.
 (define roman-symbols 
-  (list (cons 1 #\I)
-        (cons 5 #\V)
-        (cons 10 #\X)
-        (cons 50 #\L)
-        (cons 100 #\C)
+  (list (cons 1000 #\M)
         (cons 500 #\D)
-        (cons 1000 #\M)))
+        (cons 100 #\C)
+        (cons 50 #\L)
+        (cons 10 #\X)
+        (cons 5 #\V)
+        (cons 1 #\I) ))
+
+; The above is a convenient way to define our symbols,
+; but the collection is difficult to iterate through since all lists
+; in scheme are nested pairs. It becomes burdensome to check during recursion 
+; whether a given 'pair' is actually a 'sublist' or an 'inner pair'.
+; Instead, we create two separate lists that are easier to work with.
+(define decimal-numbers
+  (map car roman-symbols))
+
+(define roman-numbers
+  (map cdr roman-symbols))
+
 
 ;Roman -> Arabic
-(define (reduce-roman-symbol-to-int symbol symbols)
-  (cond ((null? symbols) 
-         0)
-        ((char=? symbol (get-symbol (car symbols))) 
-         (get-val (car symbols)))
-        (else (reduce-roman-symbol-to-int symbol (cdr symbols)))
-        ))
+(define (reduce-roman-symbol-to-int symbol decimal-numbers roman-numbers)
+  (if (null? decimal-numbers) 0)
+  (if (char=? symbol (car roman-numbers))
+      (car decimal-numbers)
+      (reduce-roman-symbol-to-int symbol (cdr decimal-numbers) (cdr roman-numbers))))
 
-(define (roman-symbol-to-int symbol) 
-  (reduce-roman-symbol-to-int symbol roman-symbols)) 
+(define (roman-symbol-to-int symbol)
+  (reduce-roman-symbol-to-int symbol decimal-numbers roman-numbers))
 
-(define (roman-numeral-to-arabic numer)
-  (sum (map roman-symbol-to-int (string->list numer))))
+(define (roman->decimal numeral)
+  (sum (map roman-symbol-to-int (string->list numeral))))
 
 ;Arabic -> Roman
 
@@ -56,5 +53,5 @@
   
 ;examples
 (roman-symbol-to-int #\X)
-(roman-numeral-to-arabic "XXV")
+(roman->decimal "XXV")
 

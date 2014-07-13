@@ -4,10 +4,10 @@
   (apply + xs))
 
 (define filterb
-    (lambda (pred lst)
-      (cond ((null? lst) '())
-            ((pred (car lst)) (cons (car lst) (filterb pred (cdr lst))))
-            (else (filterb pred (cdr lst))))))
+  (lambda (pred lst)
+    (cond ((null? lst) '())
+          ((pred (car lst)) (cons (car lst) (filterb pred (cdr lst))))
+          (else (filterb pred (cdr lst))))))
 
 (define (contains x xs)
   (if (null? xs)
@@ -15,6 +15,9 @@
       (if (string=? x (car xs))
           #t
           (contains x (cdr xs)))))
+
+(define (string-drop s n)
+  (substring s n (string-length s)))
 ;First, we must define our symbols.
 (define roman-symbols 
   (list (cons 1000 "M")
@@ -26,6 +29,7 @@
         (cons 50 "L")
         (cons 40 "XL")
         (cons 10 "X")
+        (cons 9 "IX")
         (cons 5 "V")
         (cons 4 "IV")
         (cons 1 "I") ))
@@ -45,41 +49,45 @@
 (define (compound-symbol? x) 
   (contains x (filterb (lambda(x) (= 2 (string-length x))) roman-numbers)))
 
-
-
-
-;Roman -> Decimal ;;Still needs work for reduced roman numbers
+;Roman->Decimal conversion
 (define (reduce-roman-symbol-to-int symbol decimal-numbers roman-numbers)
-  (if (null? decimal-numbers) 0)
-  (if  (string=? symbol (car roman-numbers))
-      (car decimal-numbers)
-      (reduce-roman-symbol-to-int symbol (cdr decimal-numbers) (cdr roman-numbers))))
+  (if (null? decimal-numbers) 0
+      (if  (string=? symbol (car roman-numbers))
+           (car decimal-numbers)
+           (reduce-roman-symbol-to-int symbol (cdr decimal-numbers) (cdr roman-numbers)))))
 
 (define (roman-symbol-to-int symbol)
   (reduce-roman-symbol-to-int symbol decimal-numbers roman-numbers))
 
-(define (roman->decimal numeral)
-  (sum (map roman-symbol-to-int 
-            (map string (string->list numeral)))))
+(define (reduce-roman-numeral-to-int s decimal)
+    (if (null? decimal-numbers) decimal
+        (if (< (string-length s) 2) 
+            (+ decimal (roman-symbol-to-int s))
+            (if (compound-symbol? (substring s 0 2)) 
+                (reduce-roman-numeral-to-int (string-drop s 2) 
+                                             (+ decimal (roman-symbol-to-int (substring s 0 2))))
+                (reduce-roman-numeral-to-int (string-drop s 1)
+                                             (+ decimal (roman-symbol-to-int (substring s 0 1 ))))))))
 
-;Decimal -> Roman
-(define (reduce-int-to-roman num s decimal-numbers roman-numbers)
+(define (roman->decimal numeral)
+    (reduce-roman-numeral-to-int numeral 0))
+
+;Decimal->Roman conversion
+(define (reduce-int-to-roman decimal s decimal-numbers roman-numbers)
   (if (null? decimal-numbers)
       s
-      (if (>= num (car decimal-numbers))
-          (reduce-int-to-roman (- num (car decimal-numbers)) 
-                              (string-append s (car roman-numbers)) 
-                              decimal-numbers roman-numbers)
-          (reduce-int-to-roman num s 
-                              (cdr decimal-numbers) (cdr roman-numbers)))))
+      (if (>= decimal (car decimal-numbers))
+          (reduce-int-to-roman (- decimal (car decimal-numbers)) 
+                               (string-append s (car roman-numbers)) 
+                               decimal-numbers roman-numbers)
+          (reduce-int-to-roman decimal s 
+                               (cdr decimal-numbers) (cdr roman-numbers)))))
 (define (decimal->roman number)
   (reduce-int-to-roman number "" decimal-numbers roman-numbers))
 
 
-   
-  
 ;examples
-(roman-symbol-to-int "IV")
-(roman->decimal "XXV")
+(roman-symbol-to-int "IX")
+(roman->decimal "MMXIV")
 (decimal->roman 2014)
 (decimal->roman 44)

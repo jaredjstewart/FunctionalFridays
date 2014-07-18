@@ -9,14 +9,14 @@
           ((pred (car lst)) (cons (car lst) (filterb pred (cdr lst))))
           (else (filterb pred (cdr lst))))))
 
-(define (contains x xs)
+(define (contains x xs);contains method for a list of strings
   (if (null? xs)
       #f
       (if (string=? x (car xs))
           #t
           (contains x (cdr xs)))))
 
-(define (string-drop s n)
+(define (string-drop s n) ;drops first n characters from the string s
   (substring s n (string-length s)))
 ;First, we must define our symbols.
 (define roman-symbols 

@@ -33,7 +33,7 @@
                                           (+ (string-length msg) front_padding)))))))
 (define (print-disk num width)
   (block-print (string-repeat (number->string num)
-                             (- (* 2 num) 1))
+                             (+ (* 2 num) 1))
                width))
 
 (define (print-tower-line tower current_line max_height)
@@ -44,7 +44,6 @@
           (else (print-disk (list-ref tower 
                                       (- current_line (+ 1 empty_rows)))
                             25)))))
-
 
 (define (print-towers-reduce a b c current_line max_height)
   (if (> current_line max_height)
@@ -58,12 +57,20 @@
              (print-towers-reduce a b c (+ 1 current_line) max_height))))
 (define (print-towers a b c max_height)
   (print-towers-reduce a b c 0 max_height))
+        
+(define (move a b) (cons (cdr a) 
+                         (cons (car a) b)))
 
-(print-towers (list 1 3) (list ) (list 2 4) 5)
-             
-             
 
 
+
+
+(print-towers (list 1 3) (list ) (list 2 4) 5)     
+    
+(define x (move (list 1 2 3) (list 4)))
+(car x)
+(newline)
+(cdr x)
   
 
       

@@ -9,12 +9,12 @@
           ((pred (car lst)) (cons (car lst) (filterb pred (cdr lst))))
           (else (filterb pred (cdr lst))))))
 
-(define (contains x xs)
+(define (contains? x xs) ;contains? method for a list of strings
   (if (null? xs)
       #f
       (if (string=? x (car xs))
           #t
-          (contains x (cdr xs)))))
+          (contains? x (cdr xs)))))
 
 (define (string-drop s n)
   (substring s n (string-length s)))
@@ -47,7 +47,7 @@
 
 ; and we implement an interface to these representations
 (define (compound-symbol? x) 
-  (contains x (filterb (lambda(x) (= 2 (string-length x))) roman-numbers)))
+  (contains? x (filterb (lambda(x) (= 2 (string-length x))) roman-numbers)))
 
 ;Roman->Decimal conversion
 (define (reduce-roman-symbol-to-int symbol decimal-numbers roman-numbers)

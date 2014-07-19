@@ -46,9 +46,22 @@
                             25)))))
 
 
+(define (print-towers-reduce a b c current_line max_height)
+  (if (> current_line max_height)
+      (newline)
+      (begin (newline)
+             (print-tower-line a current_line max_height)
+             (display " ")
+             (print-tower-line b current_line max_height)
+             (display " ")
+             (print-tower-line c current_line max_height)
+             (print-towers-reduce a b c (+ 1 current_line) max_height))))
+(define (print-towers a b c max_height)
+  (print-towers-reduce a b c 0 max_height))
 
-(print-tower-line (list 2 3) 3 5)
-
+(print-towers (list 1 3) (list ) (list 2 4) 5)
+             
+             
 
 
   
@@ -58,7 +71,7 @@
 
 
 ; print tower
-(newline)
+;(newline)
 
 (define (print-tower-reduce tower current_line max_height)
   (let ((empty_rows (- max_height 
@@ -77,5 +90,5 @@
           
 
 
-(print-tower-reduce (list 1 3 4) 1 7)
-(display "54")
+;(print-tower-reduce (list 1 3 4) 1 7)
+;(display "54")

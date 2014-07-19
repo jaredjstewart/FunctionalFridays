@@ -55,9 +55,8 @@
              (display " ")
              (print-tower-line c current_line max_height)
              (print-towers-reduce a b c (+ 1 current_line) max_height))))
-(define (print-towers towers max_height)
-  (print-towers-reduce (list-ref towers 0) (list-ref towers 1) (list-ref towers 2) 0  max_height))
-
+(define (print-towers towers)
+  (print-towers-reduce (list-ref towers 0) (list-ref towers 1) (list-ref towers 2) 0  (height towers)))
 
 (define (move-single-disk towers from to)
   (cond 
@@ -92,14 +91,25 @@
                       (list-ref towers 1)) 
                 (cdr (list-ref towers 2))))))
 
-        
-        
-        
-(define towers (list (list 1 2 3 4) (list ) (list )))
+(define (height towers)
+  (apply max (flatten towers)))
 
-(newline)
-       
-        
+(define (flatten list)
+   (cond ((null? list) nil)
+         ((list? (car list)) (append (flatten (car list)) (flatten (cdr list))))
+         (else
+          (cons (car list) (flatten (cdr list))))))
+
+(define (make-range a b)
+  (if (> a b)
+      nil
+      (cons a (make-range (+ 1 a) b))))
+
+(define (make-tower n)
+  (list (make-range 1 n)
+        (list )
+        (list )))
+            
 (define (towers-of-hanoi n source dest temp)
   (if (= n 1)
       (begin 
@@ -109,7 +119,7 @@
         (display dest)
         (newline)
         (set! towers (move-single-disk towers source dest))
-        (print-towers towers 4)
+        (print-towers towers)
         (newline)
         )
       (begin 
@@ -120,26 +130,20 @@
         (display dest)
         (newline)
         (set! towers (move-single-disk towers source dest))
-        (print-towers towers 4)
+        (print-towers towers)
         (newline)
         (towers-of-hanoi (- n 1) temp dest source))))
 
 
-(display "Starting configuration")
+
+(define towers (make-tower 4))
+
 (newline)
-(print-towers towers 4)
+  (display "Starting configuration with 4 disks")
 (newline)
-(towers-of-hanoi 4 1 3 2)      
-        
-        
-        
-        
-        
-        
-        
-        
-        ; print tower
-        ;(newline)
+(print-towers towers)
+(newline)
+(towers-of-hanoi 3 1 3 2) 
         
         (define (print-tower-reduce tower current_line max_height)
           (let ((empty_rows (- max_height 
@@ -158,3 +162,4 @@
         
         ;(print-tower-reduce (list 1 3 4) 1 7)
         ;(display "54")
+;todo (define (height towers) 

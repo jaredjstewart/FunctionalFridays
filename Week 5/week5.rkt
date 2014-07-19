@@ -95,14 +95,31 @@
         
         
         
+(define mylist (list (list 1 2 3) (list 7) (list 4  5)))
+(display mylist)
+;(display (move-single-disk mylist 3 2))
+(newline)
+(newline)
         
-        (display (move-single-disk (list (list 1 2 3) (list 7) (list 4  5)) 3 2))
         
+(define (towers-of-hanoi n tower source dest temp)
+  (if (= n 1)
+      (begin 
+        (display "Move the disk from ")
+        (display source) 
+        (display " to " )
+        (display dest)
+        (newline))
+      (begin 
+        (towers-of-hanoi (- n 1) tower source temp dest)
+        (display "Move the disk from ") 
+        (display source)
+        (display " to ")
+        (display dest)
+        (newline)
+        (towers-of-hanoi (- n 1) tower temp dest source))))        
         
-        
-        
-        
-        
+(towers-of-hanoi 2 mylist 0 2 1)      
         
         
         

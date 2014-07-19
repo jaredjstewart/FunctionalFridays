@@ -154,22 +154,7 @@
         (print-towers towers)
         (newline)
         (towers-of-hanoi height 1 2 3)))
-
-(define (print-tower-reduce tower current_line max_height)
-  (let ((empty_rows (- max_height 
-                       (+ 1 (length tower)))))
-    (if (= current_line max_height) 
-        (begin (print-repeat "=" 25)
-               (newline))
-        (begin 
-          (if (<= current_line empty_rows) 
-              (block-print "|" 25)
-              (print-disk (list-ref tower 
-                                    (- current_line (+ 1 empty_rows)))
-                          25))
-          (newline)
-          (print-tower-reduce tower (+ 1 current_line) max_height)))))
-(demo 5)
+(demo 8)
 
 ;(print-tower-reduce (list 1 3 4) 1 7)
 ;(display "54")

@@ -4,6 +4,7 @@
 ;tower1 = [1 2]
 ;tower2 = [] 
 ;tower3 = [3]
+(define towers (list ))
 
 (define (string-repeat-reduce msg buffer n)
   (if (= n 1)
@@ -36,27 +37,27 @@
                               (+ (* 2 num) 1))
                width))
 
-(define (print-tower-line tower current_line max_height)
+(define (print-tower-line tower current_line max_height max_width)
   (let ((empty_rows (- max_height 
                        (+ 1 (length tower)))))
-    (cond ((= current_line max_height) (print-repeat "=" 25))
-          ((<= current_line empty_rows) (block-print "|" 25))
+    (cond ((= current_line max_height) (print-repeat "=" max_width))
+          ((<= current_line empty_rows) (block-print "|" max_width))
           (else (print-disk (list-ref tower 
                                       (- current_line (+ 1 empty_rows)))
-                            25)))))
+                            max_width)))))
 
-(define (print-towers-reduce a b c current_line max_height)
+(define (print-towers-reduce a b c current_line max_height max_width)
   (if (> current_line max_height)
       (newline)
       (begin (newline)
-             (print-tower-line a current_line max_height)
+             (print-tower-line a current_line max_height max_width)
              (display " ")
-             (print-tower-line b current_line max_height)
+             (print-tower-line b current_line max_height max_width)
              (display " ")
-             (print-tower-line c current_line max_height)
-             (print-towers-reduce a b c (+ 1 current_line) max_height))))
+             (print-tower-line c current_line max_height max_width)
+             (print-towers-reduce a b c (+ 1 current_line) max_height max_width))))
 (define (print-towers towers)
-  (print-towers-reduce (list-ref towers 0) (list-ref towers 1) (list-ref towers 2) 0  (height towers)))
+  (print-towers-reduce (list-ref towers 0) (list-ref towers 1) (list-ref towers 2) 0  (height towers) (width towers)))
 
 (define (move-single-disk towers from to)
   (cond 
@@ -93,6 +94,11 @@
 
 (define (height towers)
   (apply max (flatten towers)))
+(define (width towers)
+  (let ((max_width (+ (* 2 (height towers)) 1)))
+    (if (< max_width 25)
+        25
+        (+ 4 max_width))))
 
 (define (flatten list)
    (cond ((null? list) nil)
@@ -106,11 +112,14 @@
       (cons a (make-range (+ 1 a) b))))
 
 (define (make-tower n)
-  (list (make-range 1 n)
-        (list )
-        (list )))
+  (if (> n 9)
+      (begin (display "Tower is too large to display.")
+             (nil))
+      (list (make-range 1 n)
+            (list )
+            (list ))))
             
-(define (towers-of-hanoi n source dest temp)
+(define (towers-of-hanoi n source temp dest)
   (if (= n 1)
       (begin 
         (display "Move the disk from ")
@@ -123,7 +132,7 @@
         (newline)
         )
       (begin 
-        (towers-of-hanoi (- n 1) source temp dest)
+        (towers-of-hanoi (- n 1) source  dest temp)
         (display "Move the disk from ") 
         (display source)
         (display " to ")
@@ -132,18 +141,19 @@
         (set! towers (move-single-disk towers source dest))
         (print-towers towers)
         (newline)
-        (towers-of-hanoi (- n 1) temp dest source))))
+        (towers-of-hanoi (- n 1) temp source dest))))
 
-
-
-(define towers (make-tower 4))
-
-(newline)
-  (display "Starting configuration with 4 disks")
-(newline)
-(print-towers towers)
-(newline)
-(towers-of-hanoi 3 1 3 2) 
+(define (demon height)
+  (begin(newline)
+        (display "Starting configuration with ")
+        (display height)
+        (display " disks")
+        (newline)
+        (set! towers (make-tower height))
+        (newline)
+        (print-towers towers)
+        (newline)
+        (towers-of-hanoi height 1 2 3)))
         
         (define (print-tower-reduce tower current_line max_height)
           (let ((empty_rows (- max_height 
@@ -159,6 +169,7 @@
                                   25))
                   (newline)
                   (print-tower-reduce tower (+ 1 current_line) max_height)))))
+(demo 9)
         
         ;(print-tower-reduce (list 1 3 4) 1 7)
         ;(display "54")

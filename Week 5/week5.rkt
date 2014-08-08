@@ -154,7 +154,7 @@
         (print-towers towers)
         (newline)
         (towers-of-hanoi height 1 2 3)))
-(demo 8)
+(demo 4)
 
 ;(print-tower-reduce (list 1 3 4) 1 7)
 ;(display "54")

@@ -1,0 +1,5 @@
+occursIn x xs
+allOccursIn xs ys
+SameElements xs ys
+numOccurences x xs
+ToSet xs
